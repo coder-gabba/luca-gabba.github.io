@@ -1,0 +1,11 @@
+/* Kein Favicon anzeigen */
+head > link[rel="icon"] {
+    display: none !important;
+}
+
+/* Lade-Animation */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #0A0E27;
+}

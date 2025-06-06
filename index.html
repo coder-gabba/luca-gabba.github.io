@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Luca Gabba – Portfolio">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luca Gabba – Portfolio</title>
+  <link rel="icon" href="data:,">
+
+  <style>
+    /* Vollbild-Loader */
+    #loading {
+      position: fixed; top:0; left:0;
+      width:100%; height:100%;
+      display:flex; justify-content:center; align-items:center;
+      background: linear-gradient(135deg, #0A0E27, #1D2446);
+      z-index:9999; transition:opacity .5s ease;
+    }
+    #loader-spinner {
+      width:50px; height:50px;
+      border:5px solid rgba(255,255,255,0.3);
+      border-top-color:#fff; border-radius:50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .fade-out { opacity:0; pointer-events:none; }
+  </style>
+
+  <!-- Flutter Bootstrapper -->
+  <script src="flutter.js" defer></script>
+</head>
+<body>
+  <!-- Loader-Overlay -->
+  <div id="loading">
+    <div id="loader-spinner"></div>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => {
+      // Flutter-Loader startet die Web-App
+      _flutter.loader
+        .loadEntrypoint({
+          entrypointUrl: 'main.dart.js',
+          serviceWorker: null
+        })
+        .then(engineInitializer => engineInitializer.initializeEngine())
+        .then(appRunner => {
+          appRunner.runApp();
+          // Loader ausblenden
+          const ld = document.getElementById('loading');
+          ld.classList.add('fade-out');
+          setTimeout(() => ld.remove(), 500);
+        })
+        .catch(err => {
+          console.error('Error loading Flutter web app:', err);
+        });
+    });
+  </script>
+</body>
+</html>
