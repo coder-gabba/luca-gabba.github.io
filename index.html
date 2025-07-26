@@ -38,6 +38,54 @@
   </div>
 
   <script>
+    // JWT Token Generation with current UTC date and username
+    function generateJWTToken(username = 'defaultUser') {
+      // Base64 URL encode function
+      function base64UrlEncode(obj) {
+        const str = JSON.stringify(obj);
+        return btoa(str)
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=/g, '');
+      }
+
+      // JWT Header
+      const header = {
+        alg: 'HS256',
+        typ: 'JWT'
+      };
+
+      // JWT Payload with current UTC date and username
+      const payload = {
+        username: username,
+        iat: Math.floor(Date.now() / 1000), // Current UTC timestamp
+        utcDate: new Date().toISOString(), // Current UTC date in ISO format
+        exp: Math.floor(Date.now() / 1000) + 3600 // Expires in 1 hour
+      };
+
+      // For demo purposes, using a simple signature (in production, use proper HMAC with secret)
+      const encodedHeader = base64UrlEncode(header);
+      const encodedPayload = base64UrlEncode(payload);
+      const signature = btoa('demo-signature-' + encodedHeader + '.' + encodedPayload)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '');
+
+      const token = `${encodedHeader}.${encodedPayload}.${signature}`;
+      
+      console.log('Generated JWT Token:', token);
+      console.log('Payload:', payload);
+      
+      return {
+        token: token,
+        payload: payload,
+        header: header
+      };
+    }
+
+    // Make the function globally accessible
+    window.generateJWTToken = generateJWTToken;
+
     window.addEventListener('load', () => {
       // Flutter-Loader startet die Web-App
       _flutter.loader
@@ -52,6 +100,11 @@
           const ld = document.getElementById('loading');
           ld.classList.add('fade-out');
           setTimeout(() => ld.remove(), 500);
+          
+          // Generate an initial JWT token for demonstration
+          console.log('JWT Token Generator is ready. Call generateJWTToken("username") to generate a token.');
+          const demoToken = generateJWTToken('luca-gabba');
+          console.log('Demo token generated for user "luca-gabba"');
         })
         .catch(err => {
           console.error('Error loading Flutter web app:', err);
